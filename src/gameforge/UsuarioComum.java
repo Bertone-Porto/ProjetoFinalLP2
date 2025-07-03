@@ -2,13 +2,13 @@ package gameforge;
 //Usuário comum: pode postar, comentar, avaliar e favoritar
 
 public class UsuarioComum extends Usuario{
-    public UsuarioComum(String nome, PerfilUsuario perfil) {
-        super(nome, perfil);
+    public UsuarioComum(String nome, String nickname, String senha, PerfilUsuario perfil) {
+        super(nome, nickname, senha, perfil);
     }
 
     @Override
     public void mostrarPermissoes() {
-        // exibe permissões do usuário comum
+        System.out.println("Permissões: criar posts, comentar, favoritar, avaliar.");
     }
 
 }

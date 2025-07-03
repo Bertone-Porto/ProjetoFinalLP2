@@ -70,10 +70,10 @@ public class Post implements Avaliavel{
         avaliacoes.add(new Avaliacao(nota, avaliador)); // adicionar Avaliacao com nota simples (sem comentário)
     }
 
-    @Override
+    /*@Override
     public void avaliar(int nota, String comentario, Usuario avaliador) {
         avaliacoes.add(new Avaliacao(nota, comentario, avaliador));// adicionar Avaliacao com nota + comentário
-    }
+    }*/
 
     @Override
     public double calcularMedia() {
