@@ -4,7 +4,7 @@ package gameforge;
 
 public interface Avaliavel {
     void avaliar(int nota, Usuario avaliador);
-    void avaliar(int nota, String comentario, Usuario avaliador); // sobrecarga
+    //void avaliar(int nota, String comentario, Usuario avaliador); // sobrecarga
     double calcularMedia();
 
 }

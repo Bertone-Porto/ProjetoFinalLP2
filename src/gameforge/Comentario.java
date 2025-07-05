@@ -7,5 +7,21 @@ import java.util.List;
 public class Comentario implements Avaliavel{
     private Usuario autor;
     private String texto;
-    private List<Integer> avaliacoes;
+    private int upVote;
+    private int downVote;
+
+    @Override
+    public void avaliar(int nota, Usuario avaliador) {
+
+    }
+
+    /*@Override
+    public void avaliar(int nota, String comentario, Usuario avaliador) {
+
+    }*/
+
+    @Override
+    public double calcularMedia() {
+        return 0;
+    }
 }
