@@ -27,8 +27,6 @@ public class Sistema {
 
     //método principal que controla o fluxo do aplicativo
     public void executar() {
-        //passo 1: Criar 5 usuários para teste
-        //carregarDadosIniciais();
 
         //Loop do menu principal (Login)
         while (true) {
