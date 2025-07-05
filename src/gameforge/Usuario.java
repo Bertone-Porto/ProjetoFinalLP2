@@ -1,4 +1,6 @@
 package gameforge;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +19,9 @@ public abstract class Usuario {
         this.nickname = nickname;
         this.senha = senha;
         this.perfil = perfil;
+
+        this.postsCriados = new ArrayList<>();
+        this.postsFavoritos = new HashSet<>();
     }
 
     public String getNome() {
@@ -31,6 +36,10 @@ public abstract class Usuario {
         return perfil;
     }
 
+    public boolean autenticar(String senhaDigitada) {
+        // Compara a senha armazenada com a senha fornecida
+        return this.senha.equals(senhaDigitada);
+    }
 
     public abstract void mostrarPermissoes();
 
