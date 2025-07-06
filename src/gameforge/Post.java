@@ -64,6 +64,13 @@ public class Post implements Avaliavel{
         return favoritadoPor;
     }
 
+    public void printarComentarios(){
+        for(int i = 0; i < comentarios.size(); i++){
+            System.out.println(comentarios.get(i).toString());
+        }
+    }
+
+
     //implementações da interface Avaliavel
     @Override
     public void avaliar(int nota, Usuario avaliador) {
@@ -74,6 +81,14 @@ public class Post implements Avaliavel{
     public void avaliar(int nota, String comentario, Usuario avaliador) {
         avaliacoes.add(new Avaliacao(nota, comentario, avaliador));// adicionar Avaliacao com nota + comentário
     }*/
+
+    public void adicionarComentario(Comentario comentario){
+        comentarios.add(comentario);
+    }
+
+    public void adicionarAvaliacao(Avaliacao avaliacao){
+        avaliacoes.add(avaliacao);
+    }
 
     @Override
     public double calcularMedia() {

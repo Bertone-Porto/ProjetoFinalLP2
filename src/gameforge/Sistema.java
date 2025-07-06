@@ -27,9 +27,6 @@ public class Sistema {
 
     //método principal que controla o fluxo do aplicativo
     public void executar() {
-        //passo 1: Criar 5 usuários para teste
-        //carregarDadosIniciais();
-
         //Loop do menu principal (Login)
         while (true) {
             exibirMenuPrincipal();
@@ -118,8 +115,33 @@ public class Sistema {
     //      Lida com todo o fluxo de criação de um novo post.
     //      (A ser implementado)
     private void executarCriacaoDePost() {
-        System.out.println(">> Funcionalidade 'Criar Post' ainda não implementada. <<");
-        // TODO: aqui entrará a lógica de pedir título, descrição, gênero e criar o objeto Post.
+        System.out.println("\n--- Criar Novo Post ---");
+
+        System.out.print("Título: ");
+        String titulo = scanner.nextLine();
+
+        System.out.print("Descrição: ");
+        String descricao = scanner.nextLine();
+
+        System.out.println("\nEscolha um gênero para o post:");
+        for (int i = 0; i < Genero.values().length; i++) {
+            System.out.println((i + 1) + ". " + Genero.values()[i].getDescricao());
+        }
+
+        System.out.print("Digite o número do gênero: ");
+        int opcaoGenero = Integer.parseInt(scanner.nextLine());
+
+        if (opcaoGenero < 1 || opcaoGenero > Genero.values().length) {
+            System.out.println("Opção inválida. Post não criado.");
+            return;
+        }
+
+        Genero generoEscolhido = Genero.values()[opcaoGenero - 1];
+
+        Post novoPost = new Post(titulo, descricao, generoEscolhido, usuarioLogado);
+        posts.add(novoPost);
+
+        System.out.println("Post criado com sucesso!");
     }
 
     //      lida com o fluxo de busca de posts por gênero.
@@ -227,26 +249,84 @@ public class Sistema {
             System.out.println("Descrição: " + post.getDescricao());
             System.out.println("----------------------------------------------");
             System.out.println("1. Comentar neste post");
-            System.out.println("2. Avaliar este post");
-            System.out.println("3. Voltar para a lista de posts");
+            System.out.println("2. Mostrar comentários do post");
+            System.out.println("3. Avaliar o post");
+            System.out.println("4. Voltar para a lista de posts");
+
             System.out.print("Escolha uma opção: ");
 
             int escolhaAcao = Integer.parseInt(scanner.nextLine());
 
-            switch (escolhaAcao) {//falta implementar essa parte toda
+            switch (escolhaAcao) {
                 case 1:
-                    System.out.println(">> Funcionalidade 'Comentar' ainda não implementada. <<");
+                    executarComentarioEmPost(post);
                     break;
+
                 case 2:
-                    System.out.println(">> Funcionalidade 'Avaliar' ainda não implementada. <<");
+                    post.printarComentarios();
                     break;
+
                 case 3:
+                    executarAvaliacaoDePost(post);
+                    break;
+
+                case 4:
                     return; //sai deste método e volta para a tela de paginação de posts
+
                 default:
                     System.out.println(" Opção inválida.");
             }
         }
     }
+
+    //método para criar o comentário em post
+    private void executarComentarioEmPost(Post post) {
+        System.out.println("\n--- Novo Comentário ---");
+        System.out.print("Digite seu comentário: ");
+        String texto = scanner.nextLine();
+
+        if (texto.trim().isEmpty()) {
+            System.out.println("Comentário vazio não permitido.");
+            return;
+        }
+
+        Comentario comentario = new Comentario(usuarioLogado, texto);
+        post.adicionarComentario(comentario);
+        this.posts.add(post);
+
+        System.out.println("Comentário adicionado com sucesso!");
+    }
+
+    //método para criação de avaliação em post
+    private void executarAvaliacaoDePost(Post post) {
+        for (Avaliacao avaliacao : post.getAvaliacoes()) {
+            if (avaliacao.getAutor().equals(usuarioLogado)) {
+                System.out.println("Você já votou nesse post.");
+                return; //nao permite avaliar duas vezes
+            }
+        }
+
+        System.out.println("\n--- Avaliar Post ---");
+        System.out.print("Digite uma nota de 1 a 5: ");
+
+        int nota;
+        try {
+            nota = Integer.parseInt(scanner.nextLine());
+            if (nota < 1 || nota > 5) {
+                System.out.println("Nota inválida. Avaliação cancelada.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida. Digite apenas números de 1 a 5.");
+            return;
+        }
+
+        Avaliacao avaliacao = new Avaliacao(nota, usuarioLogado);
+        post.adicionarAvaliacao(avaliacao);
+
+        System.out.println("Avaliação registrada com sucesso!");
+    }
+
 
     //este método contém a lógica de criação do usuário
     public void executarCadastroDeUsuario() {

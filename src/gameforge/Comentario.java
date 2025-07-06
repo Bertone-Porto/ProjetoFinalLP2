@@ -10,6 +10,13 @@ public class Comentario implements Avaliavel{
     private int upVote;
     private int downVote;
 
+    public Comentario(Usuario autor, String texto){
+        this.autor = autor;
+        this.texto = texto;
+        this.upVote = 0;
+        this.downVote = 0;
+    }
+
     @Override
     public void avaliar(int nota, Usuario avaliador) {
 
@@ -23,5 +30,10 @@ public class Comentario implements Avaliavel{
     @Override
     public double calcularMedia() {
         return 0;
+    }
+
+    public String toString(){
+        return "Falta fazer o modelo do print.";
+        /*Lógica do modelo de print dos comentarios. */
     }
 }

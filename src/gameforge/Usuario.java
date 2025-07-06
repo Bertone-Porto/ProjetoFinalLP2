@@ -37,7 +37,7 @@ public abstract class Usuario {
     }
 
     public boolean autenticar(String senhaDigitada) {
-        // Compara a senha armazenada com a senha fornecida
+        //compara a senha armazenada com a senha fornecida
         return this.senha.equals(senhaDigitada);
     }
 
