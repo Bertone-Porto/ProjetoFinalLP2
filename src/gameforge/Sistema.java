@@ -10,6 +10,7 @@ public class Sistema {
     private Scanner scanner; // O scanner agora é um atributo da classe
     private List<Post> posts;
 
+
     //construtor para inicializar o estado do sistema
     public Sistema() {
         this.usuarios = new ArrayList<>();
@@ -111,9 +112,11 @@ public class Sistema {
         }
     }
 
+    public void adicionarPost(Post post){
+        posts.add(post);
+    }
 
     //      Lida com todo o fluxo de criação de um novo post.
-    //      (A ser implementado)
     private void executarCriacaoDePost() {
         System.out.println("\n--- Criar Novo Post ---");
 
@@ -136,13 +139,13 @@ public class Sistema {
             return;
         }
 
-        Genero generoEscolhido = Genero.values()[opcaoGenero - 1];
+    Genero generoEscolhido = Genero.values()[opcaoGenero - 1];
 
-        Post novoPost = new Post(titulo, descricao, generoEscolhido, usuarioLogado);
-        posts.add(novoPost);
+    Post novoPost = new Post(titulo, descricao, generoEscolhido, usuarioLogado);
+    this.adicionarPost(novoPost);
 
-        System.out.println("Post criado com sucesso!");
-    }
+    System.out.println("Post criado com sucesso!");
+}
 
 
     //      lida com o fluxo de busca de posts por gênero.
@@ -262,7 +265,7 @@ public class Sistema {
                 case 1:
                     executarComentarioEmPost(post);
                     break;
-
+                
                 case 2:
                     post.printarComentarios();
                     break;
@@ -273,54 +276,59 @@ public class Sistema {
 
                 case 4:
                     return; //sai deste método e volta para a tela de paginação de posts
-
+                
                 default:
                     System.out.println(" Opção inválida.");
             }
         }
     }
 
+
+    public void adicionarUsuario(Usuario usuario){
+        this.usuarios.add(usuario);
+    }
+
     //este método contém a lógica de criação do usuário
     public void executarCadastroDeUsuario() {
-        System.out.println("\n=== Criar Novo Usuário ===");
+            System.out.println("\n=== Criar Novo Usuário ===");
 
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+            System.out.print("Nome: ");
+            String nome = scanner.nextLine();
 
-        String nickname;
-        while (true) {
-            System.out.print("Nickname (único): ");
-            nickname = scanner.nextLine();
-            if (Validador.ehNicknameDisponivel(nickname, this.usuarios)) {
-                break;
-            } else {
-                System.out.println(" Erro: Esse nickname já está em uso. Tente outro.");
+            String nickname;
+            while (true) {
+                System.out.print("Nickname (único): ");
+                nickname = scanner.nextLine();
+                if (Validador.ehNicknameDisponivel(nickname, this.usuarios)) {
+                    break;
+                } else {
+                    System.out.println(" Erro: Esse nickname já está em uso. Tente outro.");
+                }
             }
-        }
 
-        String senha;
-        while (true) {
-            System.out.print("Senha (mín. 6 caracteres): ");
-            senha = scanner.nextLine();
-            if (Validador.ehSenhaValida(senha)) {
-                break;
-            } else {
-                System.out.println(" Erro: A senha deve ter pelo menos 6 caracteres.");
+            String senha;
+            while (true) {
+                System.out.print("Senha (mín. 6 caracteres): ");
+                senha = scanner.nextLine();
+                if (Validador.ehSenhaValida(senha)) {
+                    break;
+                } else {
+                    System.out.println(" Erro: A senha deve ter pelo menos 6 caracteres.");
+                }
             }
-        }
 
-        System.out.print("Bio: ");
-        String bio = scanner.nextLine();
-        System.out.print("Telefone: ");
-        String telefone = scanner.nextLine();
-        System.out.print("Localização: ");
-        String localizacao = scanner.nextLine();
+            System.out.print("Bio: ");
+            String bio = scanner.nextLine();
+            System.out.print("Telefone: ");
+            String telefone = scanner.nextLine();
+            System.out.print("Localização: ");
+            String localizacao = scanner.nextLine();
 
-        PerfilUsuario perfil = new PerfilUsuario(bio, telefone, localizacao);
-        Usuario novoUsuario = new UsuarioComum(nome, nickname, senha, perfil);
+            PerfilUsuario perfil = new PerfilUsuario(bio, telefone, localizacao);
+            Usuario novoUsuario = new UsuarioComum(nome, nickname, senha, perfil);
 
-        this.usuarios.add(novoUsuario);
-        System.out.println("\n Usuário '" + nickname + "' criado com sucesso! Agora você pode fazer login.");
+            this.adicionarUsuario(novoUsuario);
+            System.out.println("\n Usuário '" + nickname + "' criado com sucesso! Agora você pode fazer login.");
     }
 
     private void executarComentarioEmPost(Post post) {
@@ -345,7 +353,7 @@ public class Sistema {
             if (avaliacao.getAutor().equals(usuarioLogado)) {
                 System.out.println("Você já votou nesse post.");
                 return; //nao permite avaliar duas vezes
-            }
+                }
         }
 
         System.out.println("\n--- Avaliar Post ---");
@@ -368,8 +376,4 @@ public class Sistema {
 
         System.out.println("Avaliação registrada com sucesso!");
     }
-
-
-
-
 }
