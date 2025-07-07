@@ -11,11 +11,11 @@ public class Avaliacao {
         this.autor = autor;
     }
 
-    public Avaliacao(int nota, String comentario, Usuario autor) {
+    /*public Avaliacao(int nota, String comentario, Usuario autor) {
         this.nota = nota;
         this.comentario = comentario;
         this.autor = autor;
-    }
+    }*/
 
     public int getNota() {
         return nota;
