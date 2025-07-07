@@ -1,5 +1,6 @@
 package gameforge;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,13 @@ public class Post implements Avaliavel{
         return comentarios;
     }
 
+    public void printarComentarios(){
+        Collections.sort(comentarios);
+        for(int i = 0; i < comentarios.size(); i++){
+            System.out.println(comentarios.get(i).toString());
+        }
+    }
+
     public List<Avaliacao> getAvaliacoes() {
         return avaliacoes;
     }
@@ -63,13 +71,6 @@ public class Post implements Avaliavel{
     public Set<Usuario> getFavoritadoPor() {
         return favoritadoPor;
     }
-
-    public void printarComentarios(){
-        for(int i = 0; i < comentarios.size(); i++){
-            System.out.println(comentarios.get(i).toString());
-        }
-    }
-
 
     //implementações da interface Avaliavel
     @Override
@@ -102,6 +103,4 @@ public class Post implements Avaliavel{
         }
         return soma/avaliacoes.size();
     }
-
-
 }
