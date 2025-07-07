@@ -10,7 +10,6 @@ public class Sistema {
     private Scanner scanner; // O scanner agora é um atributo da classe
     private List<Post> posts;
 
-
     //construtor para inicializar o estado do sistema
     public Sistema() {
         this.usuarios = new ArrayList<>();
