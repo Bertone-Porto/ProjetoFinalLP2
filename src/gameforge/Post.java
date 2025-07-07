@@ -20,10 +20,10 @@ public class Post implements Avaliavel{
     private Set<Usuario> favoritadoPor;
 
     /*
-     * Construtor da classe Post.
-     * É chamado pela classe Sistema quando um usuário cria um novo post.
-     * Inicializa os dados essenciais e as coleções para evitar erros.
-     *
+      Construtor da classe Post.
+      É chamado pela classe Sistema quando um usuário cria um novo post.
+      Inicializa os dados essenciais e as coleções para evitar erros.
+
      */
     public Post(String titulo, String descricao, Genero genero, Usuario autor) {
         this.titulo = titulo;
@@ -58,9 +58,20 @@ public class Post implements Avaliavel{
     }
 
     public void printarComentarios(){
-        Collections.sort(comentarios);
-        for(int i = 0; i < comentarios.size(); i++){
-            System.out.println(comentarios.get(i).toString());
+        System.out.println("\n---  Comentários do Post: " + this.getTitulo() + " ---");
+
+        if (this.comentarios.isEmpty()) {
+            System.out.println(">> Nenhum comentário neste post ainda. <<");
+        } else {
+            //ordena os comentários do mais novo para o mais antigo
+            Collections.sort(this.comentarios);
+
+            for (Comentario comentario : this.comentarios) {
+                System.out.println("---------------------------------");
+                //chama o método toString()  em Comentario
+                System.out.println(comentario.toString());
+            }
+            System.out.println("---------------------------------");
         }
     }
 
@@ -76,6 +87,16 @@ public class Post implements Avaliavel{
     @Override
     public void avaliar(int nota, Usuario avaliador) {
         avaliacoes.add(new Avaliacao(nota, avaliador)); // adicionar Avaliacao com nota simples (sem comentário)
+    }
+
+    /*
+      adiciona um usuário ao conjunto de usuários que favoritaram este post
+      o usuário que favoritou o post
+     */
+    public void adicionarFavorito(Usuario usuario) {
+        if (usuario != null) {
+            this.favoritadoPor.add(usuario);
+        }
     }
 
     /*@Override
@@ -102,5 +123,10 @@ public class Post implements Avaliavel{
             soma += a.getNota();
         }
         return soma/avaliacoes.size();
+    }
+
+
+    public int getQuantidadeFavoritos() {
+        return this.favoritadoPor.size();
     }
 }

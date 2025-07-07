@@ -2,6 +2,7 @@ package gameforge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 //classe principal que gerencia a execução do programa, menus e dados
 public class Sistema {
@@ -31,21 +32,29 @@ public class Sistema {
         //Loop do menu principal (Login)
         while (true) {
             exibirMenuPrincipal();
-            int opcao = Integer.parseInt(scanner.nextLine());
+            String entrada = scanner.nextLine(); //lê a entrada como String
 
-            if (opcao == 1) {
-                executarLogin();
-            } else if (opcao == 2) {
-                executarCadastroDeUsuario();
-            } else if (opcao == 3) {
-                System.out.println("Saindo do sistema... Até logo!");
-                break;
+            // valida antes de converter
+            if (Validador.isStringInteiroValido(entrada)) {
+                int opcao = Integer.parseInt(entrada);
+                switch (opcao) {
+                    case 1:
+                        executarLogin();
+                        break;
+                    case 2:
+                        executarCadastroDeUsuario();
+                        break;
+                    case 3:
+                        System.out.println("Saindo do sistema... Até logo!");
+                        scanner.close();
+                        return;
+                    default:
+                        System.out.println(" Opção inválida.");
+                }
             } else {
-                System.out.println("Opção inválida. Tente novamente.");
+                System.out.println(" Erro: Por favor, digite apenas um número para a opção.");
             }
         }
-
-        scanner.close();
     }
 
     private void exibirMenuPrincipal() {
@@ -88,26 +97,35 @@ public class Sistema {
         while (this.usuarioLogado != null) {
             System.out.println("\n--- MENU DE USUÁRIO: @" + this.usuarioLogado.getNickname() + " ---");
             System.out.println("1. Criar Post");
-            System.out.println("2. Procurar Post por Gênero");
-            System.out.println("3. Deslogar");
+            System.out.println("2. Procurar Post");
+            System.out.println("3. Ver Meus Posts Favoritos"); // NOVA OPÇÃO
+            System.out.println("4. Deslogar");
             System.out.print("Escolha uma opção: ");
 
-            int opcao = Integer.parseInt(scanner.nextLine());
+            String entrada = scanner.nextLine(); //lê a entrada como String
 
-            switch (opcao) {
-                case 1: //criação post aqui
-                    executarCriacaoDePost();
-                    break;
-                case 2: //procura post aqui
-                    executarBuscaDePost();
-                    break;
-                case 3://deslogar
-                    System.out.println("Deslogando...");
-                    this.usuarioLogado = null;
-                    break;
-                default:
-                    System.out.println("Opção inválida.");
-                    break;
+            // MUDANÇA AQUI: Valida antes de converter
+            if (Validador.isStringInteiroValido(entrada)) {
+                int opcao = Integer.parseInt(entrada);
+                switch (opcao) {
+                    case 1:
+                        executarCriacaoDePost();
+                        break;
+                    case 2:
+                        escolherTipoDeBusca();
+                        break;
+                    case 3:
+                        executarVerFavoritos();
+                        break;
+                    case 4:
+                        System.out.println("Deslogando...");
+                        this.usuarioLogado = null;
+                        break;
+                    default:
+                        System.out.println(" Opção inválida.");
+                }
+            } else {
+                System.out.println(" Erro: Por favor, digite apenas um número para a opção.");
             }
         }
     }
@@ -145,10 +163,33 @@ public class Sistema {
     this.adicionarPost(novoPost);
 
     System.out.println("Post criado com sucesso!");
-}
+    }
 
 
-    //      lida com o fluxo de busca de posts por gênero.
+    //exibe a lista de posts favoritados pelo usuário logado.
+    private void executarVerFavoritos() {
+        System.out.println("\n--- ⭐ Meus Posts Favoritos ---");
+
+        Set<Post> favoritos = this.usuarioLogado.getPostsFavoritos();
+
+        if (favoritos.isEmpty()) {
+            System.out.println("Você ainda não favoritou nenhum post.");
+        } else {
+            int i = 1;
+            for (Post post : favoritos) {
+                System.out.println(i + ". " + post.getTitulo() + " (por @" + post.getAutor().getNickname() + ")");
+                i++;
+            }
+        }
+        System.out.print("\nPressione Enter para voltar ao menu...");
+        scanner.nextLine();
+    }
+
+    /*
+      MÉTODO DE BUSCA 1: Busca por Gênero.
+      Pergunta ao usuário qual gênero ele quer, filtra a lista de posts
+      e depois chama o método de exibição.
+     */
     private void executarBuscaDePost() {
         System.out.println("\n--- Gêneros Disponíveis ---");
         for (int i = 0; i < Genero.values().length; i++) {
@@ -156,52 +197,106 @@ public class Sistema {
         }
 
         System.out.print("Escolha o número do gênero que deseja procurar: ");
-        int escolhaGenero = Integer.parseInt(scanner.nextLine());
+        String entrada = scanner.nextLine();
+        if (!Validador.isStringInteiroValido(entrada)) {
+            System.out.println(" Opção inválida.");
+            return;
+        }
+        int escolhaGenero = Integer.parseInt(entrada);
 
         if (escolhaGenero >= 1 && escolhaGenero <= Genero.values().length) {
             Genero generoEscolhido = Genero.values()[escolhaGenero - 1];
-            //inicia a navegação na primeira página (página 0)
-            exibirPaginaDePosts(generoEscolhido, 0);
+
+            // ETAPA 1: FILTRAR A LISTA PRIMEIRO
+            List<Post> postsFiltrados = new ArrayList<>();
+            for (Post post : this.posts) {
+                if (post.getGenero() == generoEscolhido) {
+                    postsFiltrados.add(post);
+                }
+            }
+
+            // ETAPA 2: PREPARAR OS PARÂMETROS PARA O MÉTODO DE EXIBIÇÃO
+            String tituloDaPagina = "Posts do Gênero '" + generoEscolhido.getDescricao() + "'";
+            int paginaInicial = 0;
+
+            // ETAPA 3: CHAMAR O MÉTODO GENÉRICO COM OS 3 PARÂMETROS CORRETOS
+            exibirPaginaDePosts(postsFiltrados, tituloDaPagina, paginaInicial);
+
         } else {
             System.out.println(" Opção de gênero inválida.");
         }
     }
 
     /*
-      exibe uma página de resultados e o menu de navegação
-      genero O gênero que está sendo buscado
-      pagina O número da página atual (começando em 0)
+      MÉTODO DE BUSCA 2 (SOBRECARGA): Busca por palavra-chave.
+      Recebe uma String como parâmetro.
      */
-    private void exibirPaginaDePosts(Genero genero, int pagina) {
-        // 1. filtra a lista principal de posts para pegar apenas os do gênero escolhido
+    private void executarBuscaDePost(String palavraChave){
         List<Post> postsFiltrados = new ArrayList<>();
         for (Post post : this.posts) {
-            if (post.getGenero() == genero) {
+            if (post.getTitulo().toLowerCase().contains(palavraChave.toLowerCase())) {
                 postsFiltrados.add(post);
             }
         }
+        String titulo = "Resultados da Busca por '" + palavraChave + "'";
+        exibirPaginaDePosts(postsFiltrados, titulo, 0);
+    }
 
-        // 2.verifica se a busca retornou algum resultado
-        if (postsFiltrados.isEmpty()) {
-            System.out.println("\nNenhum post encontrado para o gênero '" + genero.getDescricao() + "'.");
-            return; // Volta para o menu anterior.
+    // --- MÉTODOS DE BUSCA ---
+    private void escolherTipoDeBusca() {
+        System.out.println("\n--- TIPO DE BUSCA ---");
+        System.out.println("1. Buscar por Gênero");
+        System.out.println("2. Buscar por Palavra-Chave no Título");
+        System.out.print("Escolha uma opção: ");
+        String entrada = scanner.nextLine();
+        if (!Validador.isStringInteiroValido(entrada)) {
+            System.out.println(" Opção inválida.");
+            return;
+        }
+        int escolha = Integer.parseInt(entrada);
+
+        if (escolha == 1) {
+            executarBuscaDePost();
+        } else if (escolha == 2) {
+            System.out.print("Digite a palavra-chave para buscar no título: ");
+            String palavraChave = scanner.nextLine();
+            executarBuscaDePost(palavraChave);
+        } else {
+            System.out.println(" Opção inválida.");
+        }
+    }
+
+    /*
+     * MÉTODO REATORADO: Agora exibe qualquer lista de posts com paginação
+      ele não faz mais a filtragem, apenas exibe os resultados que recebe
+     postsParaExibir: A lista de posts já filtrada a ser exibida
+      O título a ser mostrado no topo da página (ex: "Posts de RPG")
+     */
+    private void exibirPaginaDePosts(List<Post> postsParaExibir, String tituloPagina, int pagina) {
+        // 1. Verifica se a busca inicial retornou algum resultado.
+        if (postsParaExibir.isEmpty()) {
+            System.out.println("\nNenhum post encontrado com os critérios da busca.");
+            return; //volta para o menu anterior.
         }
 
         while (true) {
-            System.out.println("\n--- Exibindo Posts de '" + genero.getDescricao() + "' (Página " + (pagina + 1) + ") ---");
+            System.out.println("\n--- " + tituloPagina + " (Página " + (pagina + 1) + ") ---");
 
             int inicio = pagina * 3;
 
-            //pega os 3 posts da página atual
+            //pega os 3 posts da página atual da lista já filtrada
             List<Post> postsDaPagina = new ArrayList<>();
-            for (int i = inicio; i < inicio + 3 && i < postsFiltrados.size(); i++) {
-                postsDaPagina.add(postsFiltrados.get(i));
+            for (int i = inicio; i < inicio + 3 && i < postsParaExibir.size(); i++) {
+                postsDaPagina.add(postsParaExibir.get(i));
             }
 
             if (postsDaPagina.isEmpty()) {
                 System.out.println("Não há mais posts para exibir nesta página.");
-                pagina--; //volta para a página anterior
-                continue; //recomeça o loop na página anterior
+                //evita ficar preso em uma página vazia, retorna para a anterior.
+                if (pagina > 0) {
+                    pagina--;
+                }
+                continue;
             }
 
             //exibe os posts da página
@@ -215,24 +310,34 @@ public class Sistema {
             System.out.println("3. Voltar ao menu de usuário");
             System.out.print("Escolha uma opção: ");
 
-            int escolhaAcao = Integer.parseInt(scanner.nextLine());
+            //validação da entrada do usuário
+            String entrada = scanner.nextLine();
+            if (!Validador.isStringInteiroValido(entrada)) {
+                System.out.println(" Opção inválida.");
+                continue; // Pede a opção novamente
+            }
+            int escolhaAcao = Integer.parseInt(entrada);
 
             switch (escolhaAcao) {
                 case 1:
                     System.out.print("Digite o número do post que deseja ver: ");
-                    int numPost = Integer.parseInt(scanner.nextLine());
-                    if (numPost >= 1 && numPost <= postsDaPagina.size()) {
-                        //passa o objeto Post de verdade para o método de detalhes
-                        exibirDetalhesDoPost(postsDaPagina.get(numPost - 1));
+                    String entradaPost = scanner.nextLine();
+                    if (Validador.isStringInteiroValido(entradaPost)) {
+                        int numPost = Integer.parseInt(entradaPost);
+                        if (numPost >= 1 && numPost <= postsDaPagina.size()) {
+                            exibirDetalhesDoPost(postsDaPagina.get(numPost - 1));
+                        } else {
+                            System.out.println(" Número de post inválido.");
+                        }
                     } else {
-                        System.out.println(" Número de post inválido.");
+                        System.out.println(" Opção inválida.");
                     }
                     break;
                 case 2:
                     pagina++;
                     break;
                 case 3:
-                    return;
+                    return; //sai deste método e volta para o menuUsuarioLogado
                 default:
                     System.out.println(" Opção inválida.");
             }
@@ -241,7 +346,6 @@ public class Sistema {
 
     /*
       exibe os detalhes de um post específico e o menu de interação
-      postPlaceholder: nome do post selecionado.
      */
     private void exibirDetalhesDoPost(Post post) {
         while (true) {
@@ -252,37 +356,105 @@ public class Sistema {
             System.out.println("Gênero: " + post.getGenero().getDescricao());
             System.out.println("Descrição: " + post.getDescricao());
             System.out.println("Média das Avaliações: " + post.calcularMedia());
+            System.out.println("️ Favoritado por: " + post.getQuantidadeFavoritos() + " usuário(s)."); //mostra quantos favoritos
             System.out.println("----------------------------------------------");
             System.out.println("1. Comentar neste post");
             System.out.println("2. Exibir comentarios do post");
             System.out.println("3. Avaliar este post");
-            System.out.println("4. Voltar para a lista de posts");
+            System.out.println("4. Favoritar este post");
+            System.out.println("5. Voltar para a lista de posts");
             System.out.print("Escolha uma opção: ");
 
             int escolhaAcao = Integer.parseInt(scanner.nextLine());
 
-            switch (escolhaAcao) {//falta implementar essa parte toda
-                case 1:
-                    executarComentarioEmPost(post);
-                    break;
-                
-                case 2:
-                    post.printarComentarios();
-                    break;
+            switch (escolhaAcao) {
+                    case 1:
+                        executarComentarioEmPost(post);
+                        break;
+                    case 2:
+                        // a votação de comentários acontece DENTRO desta tela
+                        menuInteracaoComentarios(post);
+                        break;
+                    case 3:
+                        //esta opção avalia o POST, não um comentário
+                        executarAvaliacaoDePost(post);
+                        break;
+                    case 4:
+                        this.usuarioLogado.favoritarPost(post);
+                        System.out.println(" Post favoritado com sucesso!");
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println(" Opção inválida.");
+                }
+            }
+        }
 
-                case 3:
-                    executarAvaliacaoDePost(post);
-                    break;
 
-                case 4:
-                    return; //sai deste método e volta para a tela de paginação de posts
-                
-                default:
-                    System.out.println(" Opção inválida.");
+    /*
+     exibe a lista de comentários e oferece opções de interação (votar).
+     post: O post cujos comentários serão gerenciados.
+     */
+    private void menuInteracaoComentarios(Post post) {
+        while (true) {
+            // 1. Mostra todos os comentários primeiro, já formatados e ordenados.
+            post.printarComentarios();
+
+            //se não houver comentários, não há o que fazer.
+            if (post.getComentarios().isEmpty()) {
+                System.out.print("\nPressione Enter para voltar...");
+                scanner.nextLine();
+                return;
+            }
+
+            // 2. Oferece o menu de interação
+            System.out.println("\n--- Ações de Comentário ---");
+            System.out.println("1. Dar Upvote/Downvote em um comentário");
+            System.out.println("2. Voltar para os detalhes do post");
+            System.out.print("Escolha uma opção: ");
+
+            String entrada = scanner.nextLine();
+            if (!Validador.isStringInteiroValido(entrada)) {
+                System.out.println(" Opção inválida.");
+                continue; //pede a opção de novo
+            }
+            int escolha = Integer.parseInt(entrada);
+
+            if (escolha == 1) {
+                //chama o método que você já tem para cuidar da lógica do voto
+                executarVotoEmComentario(post);
+                //após votar, o loop vai recomeçar e mostrar a lista de comentários atualizada
+            } else if (escolha == 2) {
+                return; //sai deste sub-menu e volta para a tela de detalhes do post
+            } else {
+                System.out.println(" Opção inválida.");
             }
         }
     }
 
+    private void executarAvaliacaoDePost(Post post) {
+        for (Avaliacao avaliacao : post.getAvaliacoes()) {
+            if (avaliacao.getAutor().equals(usuarioLogado)) {
+                System.out.println(" Você já avaliou este post.");
+                return;
+            }
+        }
+
+        System.out.print("Digite uma nota de 1 a 5 para o post: ");
+        String entrada = scanner.nextLine();
+        if (Validador.isStringInteiroValido(entrada)) {
+            int nota = Integer.parseInt(entrada);
+            if (nota >= 1 && nota <= 5) {
+                post.avaliar(nota, this.usuarioLogado);
+                System.out.println(" Avaliação registrada com sucesso!");
+            } else {
+                System.out.println(" Nota inválida. Deve ser entre 1 e 5.");
+            }
+        } else {
+            System.out.println(" Erro: Por favor, digite apenas um número.");
+        }
+    }
 
     public void adicionarUsuario(Usuario usuario){
         this.usuarios.add(usuario);
@@ -343,37 +515,50 @@ public class Sistema {
 
         Comentario comentario = new Comentario(usuarioLogado, texto);
         post.adicionarComentario(comentario);
-        this.posts.add(post);
+        //this.posts.add(post);
 
         System.out.println("Comentário adicionado com sucesso!");
     }
 
-    private void executarAvaliacaoDePost(Post post) {
-        for (Avaliacao avaliacao : post.getAvaliacoes()) {
-            if (avaliacao.getAutor().equals(usuarioLogado)) {
-                System.out.println("Você já votou nesse post.");
-                return; //nao permite avaliar duas vezes
-                }
+    /*
+     Gerencia a lógica de escolher um comentário e votar nele (Upvote/Downvote).
+      post: O post que contém os comentários.
+     */
+    private void executarVotoEmComentario(Post post) {
+        System.out.print("Digite o número do comentário em que deseja votar (ex: 1): ");
+        String entradaComentario = scanner.nextLine();
+        if (!Validador.isStringInteiroValido(entradaComentario)) {
+            System.out.println(" Número inválido.");
+            return;
         }
+        int numComentario = Integer.parseInt(entradaComentario);
 
-        System.out.println("\n--- Avaliar Post ---");
-        System.out.print("Digite uma nota de 1 a 5: ");
-
-        int nota;
-        try {
-            nota = Integer.parseInt(scanner.nextLine());
-            if (nota < 1 || nota > 5) {
-                System.out.println("Nota inválida. Avaliação cancelada.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Entrada inválida. Digite apenas números de 1 a 5.");
+        if (numComentario < 1 || numComentario > post.getComentarios().size()) {
+            System.out.println(" Não existe um comentário com esse número.");
             return;
         }
 
-        Avaliacao avaliacao = new Avaliacao(nota, usuarioLogado);
-        post.adicionarAvaliacao(avaliacao);
+        //pega o comentário escolhido
+        Comentario comentarioAlvo = post.getComentarios().get(numComentario - 1);
 
-        System.out.println("Avaliação registrada com sucesso!");
+        System.out.print("O que você quer dar? (1 para Upvote, 2 para Downvote): ");
+        String entradaVoto = scanner.nextLine();
+        if (!Validador.isStringInteiroValido(entradaVoto)) {
+            System.out.println(" Opção de voto inválida.");
+            return;
+        }
+        int tipoVoto = Integer.parseInt(entradaVoto);
+
+        if (tipoVoto == 1) {
+            //passamos o usuário logado para o método
+            comentarioAlvo.darUpvote(this.usuarioLogado);
+            System.out.println(" Voto registrado!");
+        } else if (tipoVoto == 2) {
+            // passamos o usuário logado para o método
+            comentarioAlvo.darDownvote(this.usuarioLogado);
+            System.out.println(" Voto registrado!");
+        } else {
+            System.out.println(" Opção de voto inválida.");
+        }
     }
 }

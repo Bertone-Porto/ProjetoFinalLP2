@@ -28,4 +28,23 @@ public class Validador {
         }
         return true; //percorreu todos e não encontrou, está disponível
     }
+
+    /**
+     Verifica se uma String contém apenas dígitos numéricos
+     A String a ser verificada
+     return true se a string for um número inteiro válido, false caso contrário
+     */
+    public static boolean isStringInteiroValido(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return false; //não é válido se for nulo ou vazio
+        }
+        //percorre cada caractere da string
+        for (char c : s.toCharArray()) {
+            //se encontrar qualquer caractere que não seja um dígito...
+            if (!Character.isDigit(c)) {
+                return false; // ...a string não é um inteiro válido.
+            }
+        }
+        return true; //se percorreu tudo e só encontrou dígitos, é válido.
+    }
 }

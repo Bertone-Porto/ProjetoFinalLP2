@@ -47,4 +47,22 @@ public abstract class Usuario {
     public String toString() {
         return "Usuário: " + nickname + " (" + nome + ")\n" + perfil.toString();
     }
+
+    /**
+      Favorita um post, criando a ligação N:N bidirecional
+      O post a ser favoritado
+     */
+    public void favoritarPost(Post post) {
+        if (post != null) {
+            // Adiciona o post à sua lista de favoritos
+            this.postsFavoritos.add(post);
+            // Avisa o post que ele foi favoritado por este usuário
+            post.adicionarFavorito(this);
+        }
+    }
+
+    public Set<Post> getPostsFavoritos() {
+        return this.postsFavoritos;
+
+    }
 }

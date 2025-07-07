@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Sistema sistema = new Sistema();
+        /*Sistema sistema = new Sistema();
 
 
         // Criar 5 usuários
@@ -142,5 +142,6 @@ public class Main {
             System.out.println("Comentários:");
             p.printarComentarios();
         }
-    }
-}
+    }*/
+//}
+    }}
