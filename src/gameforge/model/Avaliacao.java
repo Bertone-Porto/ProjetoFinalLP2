@@ -37,7 +37,7 @@ public class Avaliacao implements Comparable<Avaliacao>{
     public boolean equals(Avaliacao outro){
         if (this==outro){return true;}
         if (outro==null){return false;}
-        return this.autor.equalsIgnoreCase(outro.autor);
+        return this.autor.equals(outro.autor);
     }
 
     @Override
