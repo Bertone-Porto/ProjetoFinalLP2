@@ -50,7 +50,7 @@ public abstract class Usuario implements Comparable<Usuario>{
     }
 
     public boolean equals(Usuario outro){
-        return this.nickname.equals(outro.nickname);
+        return this.nickname.equalsIgnoreCase(outro.nickname);
     }
 
     @Override
