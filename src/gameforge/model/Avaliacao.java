@@ -1,7 +1,8 @@
-package gameforge;
+package gameforge.model;
+
 
 //representa uma avaliação com nota e comentário opcional
-public class Avaliacao {
+public class Avaliacao implements Comparable<Avaliacao>{
     private int nota;
     private String comentario; // pode ser vazio ou null
     private Usuario autor;
@@ -27,6 +28,16 @@ public class Avaliacao {
 
     public Usuario getAutor() {
         return autor;
+    }
+
+    public int compareTo(Avaliacao outro){
+        return this.autor.compareTo(outro.autor);
+    }
+
+    public boolean equals(Avaliacao outro){
+        if (this==outro){return true;}
+        if (outro==null){return false;}
+        return this.autor.equals(outro.autor);
     }
 
     @Override

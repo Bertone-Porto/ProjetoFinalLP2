@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 //Gêneros de jogos possíveis nas ideias
 
 public enum Genero {

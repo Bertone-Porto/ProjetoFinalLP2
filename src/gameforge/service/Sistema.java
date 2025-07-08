@@ -1,4 +1,7 @@
-package gameforge;
+package gameforge.service;
+
+import gameforge.model.*;
+import gameforge.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

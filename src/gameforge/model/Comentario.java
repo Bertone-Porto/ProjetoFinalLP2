@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 
 import java.util.Collections;
 import java.time.LocalDateTime;
@@ -91,6 +91,12 @@ public class Comentario implements Avaliavel, Comparable<Comentario>{
 
     public int compareTo(Comentario outro){
         return outro.dataCriacao.compareTo(this.dataCriacao);
+    }
+    
+    public boolean equals(Comentario outro){
+        if (this==outro){return true;}
+        if (outro==null){return false;}
+        return this.texto.equals(outro.texto);
     }
 
     @Override

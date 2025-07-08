@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 //Usuário administrador: pode gerenciar postagens e usuários
 
 public class UsuarioAdmin extends Usuario{

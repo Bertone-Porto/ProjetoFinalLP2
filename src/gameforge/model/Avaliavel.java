@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 
 //Interface para classes que podem ser avaliadas com nota.
 

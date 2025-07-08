@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 //Informações pessoais do usuário. Associado 1:1 com Usuario
 
 public class PerfilUsuario {

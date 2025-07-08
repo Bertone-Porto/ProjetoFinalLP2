@@ -1,5 +1,6 @@
-package gameforge;
+package gameforge.util;
 
+import gameforge.model.*;
 import java.util.List;
 
 //classe para validar processos como login, se é permitido excluir post, comentários, etc

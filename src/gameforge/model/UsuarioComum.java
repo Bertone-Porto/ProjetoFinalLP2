@@ -1,4 +1,5 @@
-package gameforge;
+package gameforge.model;
+
 //Usuário comum: pode postar, comentar, avaliar e favoritar
 
 public class UsuarioComum extends Usuario{

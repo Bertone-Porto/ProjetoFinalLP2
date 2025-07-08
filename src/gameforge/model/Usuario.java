@@ -1,4 +1,5 @@
-package gameforge;
+package gameforge.model;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -6,7 +7,7 @@ import java.util.Set;
 
 //Classe abstrata representando um usuário da plataforma
 
-public abstract class Usuario {
+public abstract class Usuario implements Comparable<Usuario>{
     protected String nome;
     protected String senha;
     protected String nickname; // nome único (@)
@@ -42,6 +43,15 @@ public abstract class Usuario {
     }
 
     public abstract void mostrarPermissoes();
+
+    
+    public int compareTo(Usuario outro){
+        return this.nickname.compareTo(outro.nickname);
+    }
+
+    public boolean equals(Usuario outro){
+        return this.nickname.equals(outro.nickname);
+    }
 
     @Override
     public String toString() {

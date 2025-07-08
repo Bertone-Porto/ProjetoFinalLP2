@@ -1,4 +1,4 @@
-package gameforge;
+package gameforge.model;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 //Representa uma ideia de jogo postada por um usuário
 
-public class Post implements Avaliavel{
+public class Post implements Avaliavel, Comparable<Post>{
     private String titulo;
     private String descricao;
     private Genero genero;
@@ -35,6 +35,16 @@ public class Post implements Avaliavel{
         this.comentarios = new ArrayList<>();
         this.avaliacoes = new ArrayList<>();
         this.favoritadoPor = new HashSet<>();
+    }
+
+    public int compareTo(Post outro){
+        return this.titulo.compareTo(outro.titulo);
+    }
+
+    public boolean equals(Post outro){
+        if (this==outro){return true;}
+        if (outro==null){return false;}
+        return (this.titulo.equals(outro.titulo) && this.descricao.equals(outro.descricao) && this.genero.equals(outro.genero));
     }
 
     public String getTitulo() {
