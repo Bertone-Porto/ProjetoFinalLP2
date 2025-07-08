@@ -44,27 +44,27 @@ public class Post implements Avaliavel, Comparable<Post>{
     public boolean equals(Post outro){
         if (this==outro){return true;}
         if (outro==null){return false;}
-        return (this.titulo.equals(outro.titulo) && this.descricao.equals(outro.descricao) && this.genero.equals(outro.genero));
+        return (this.titulo.equalsIgnoreCase(outro.titulo) && this.descricao.equalsIgnoreCase(outro.descricao) && this.genero.equalsIgnoreCase(outro.genero));
     }
 
     public String getTitulo() {
-        return titulo;
+        return this.titulo;
     }
 
     public String getDescricao() {
-        return descricao;
+        return this.descricao;
     }
 
     public Genero getGenero() {
-        return genero;
+        return this.genero;
     }
 
     public Usuario getAutor() {
-        return autor;
+        return this.autor;
     }
 
     public List<Comentario> getComentarios() {
-        return comentarios;
+        return this.comentarios;
     }
 
     public void printarComentarios(){
