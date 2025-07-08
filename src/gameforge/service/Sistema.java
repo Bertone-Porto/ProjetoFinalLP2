@@ -21,6 +21,15 @@ public class Sistema {
         this.usuarioLogado = null; //começa sem ninguém logado
         this.posts = new ArrayList<>();
         this.scanner = new Scanner(System.in);
+
+        // --- CRIAÇÃO DO USUÁRIO ADMIN HARDCODED ---
+        //cria um perfil simples para o admin
+        PerfilUsuario perfilAdmin = new PerfilUsuario("Administrador do Sistema", "N/A", "Servidor");
+        //cria o objeto UsuarioAdmin com login e senha definidos
+        Usuario admin = new UsuarioAdmin("Admin", "admin", "admin", perfilAdmin);
+        //adiciona o admin à lista de usuários do sistema
+        this.usuarios.add(admin);
+        //System.out.println(">>> Conta de administrador padrão foi criada. <<<");
     }
 
     //o único main do projeto estará aqui
@@ -365,8 +374,14 @@ public class Sistema {
             System.out.println("2. Exibir comentarios do post");
             System.out.println("3. Avaliar este post");
             System.out.println("4. Favoritar este post");
-            System.out.println("5. Voltar para a lista de posts");
+
+            // --- LÓGICA CONDICIONAL DE ADMIN ---
+            if (this.usuarioLogado instanceof UsuarioAdmin) {
+                System.out.println("9. (Admin) Deletar este Post");
+            }
+            System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
+
 
             int escolhaAcao = Integer.parseInt(scanner.nextLine());
 
@@ -386,14 +401,41 @@ public class Sistema {
                         this.usuarioLogado.favoritarPost(post);
                         System.out.println(" Post favoritado com sucesso!");
                         break;
-                    case 5:
+                    case 0:
                         return;
+                     case 9:
+                        // Checa novamente por segurança antes de executar a ação
+                        if (this.usuarioLogado instanceof UsuarioAdmin) {
+                            executarDeletarPost(post);
+                            return; //retorna, pois o post não existe mais
+                        }
+                        break; // Se não for admin, cai no default
                     default:
                         System.out.println(" Opção inválida.");
                 }
             }
         }
 
+    /*
+      Lida com a ação de um admin deletar o post que está sendo visualizado.
+     */
+    private void executarDeletarPost(Post postParaDeletar) {
+        System.out.print("Tem certeza que deseja deletar o post '" + postParaDeletar.getTitulo() + "'? (s/n): ");
+        String confirmacao = scanner.nextLine();
+
+        if (confirmacao.equalsIgnoreCase("s")) {
+            //remove o post da lista principal do sistema
+            this.posts.remove(postParaDeletar);
+
+            //remove o post das listas de favoritos de todos os usuários
+            for (Usuario u : this.usuarios) {
+                u.getPostsFavoritos().remove(postParaDeletar);
+            }
+            System.out.println(" Post deletado com sucesso.");
+        } else {
+            System.out.println("Ação cancelada.");
+        }
+    }
 
     /*
      exibe a lista de comentários e oferece opções de interação (votar).
@@ -414,25 +456,68 @@ public class Sistema {
             // 2. Oferece o menu de interação
             System.out.println("\n--- Ações de Comentário ---");
             System.out.println("1. Dar Upvote/Downvote em um comentário");
-            System.out.println("2. Voltar para os detalhes do post");
+
+            // Opção condicional para o admin
+            if (this.usuarioLogado instanceof UsuarioAdmin) {
+                System.out.println("9. (Admin) Deletar um Comentário");
+            }
+            System.out.println("0. Voltar para os detalhes do post");
             System.out.print("Escolha uma opção: ");
 
             String entrada = scanner.nextLine();
             if (!Validador.isStringInteiroValido(entrada)) {
                 System.out.println(" Opção inválida.");
-                continue; //pede a opção de novo
+                continue;
             }
             int escolha = Integer.parseInt(entrada);
 
-            if (escolha == 1) {
-                //chama o método que você já tem para cuidar da lógica do voto
-                executarVotoEmComentario(post);
-                //após votar, o loop vai recomeçar e mostrar a lista de comentários atualizada
-            } else if (escolha == 2) {
-                return; //sai deste sub-menu e volta para a tela de detalhes do post
-            } else {
-                System.out.println(" Opção inválida.");
+            switch (escolha) {
+                case 1:
+                    executarVotoEmComentario(post);
+                    break;
+                case 0:
+                    return; // Volta para o menu anterior
+                case 9:
+                    if (this.usuarioLogado instanceof UsuarioAdmin) {
+                        executarDeletarComentario(post);
+                    } else {
+                        System.out.println(" Opção inválida.");
+                    }
+                    break;
+                default:
+                    System.out.println(" Opção inválida.");
             }
+        }
+    }
+
+    /*
+      Lida com a ação de um admin deletar um comentário específico de um post.
+     */
+    private void executarDeletarComentario(Post post) {
+        System.out.print("Digite o número do comentário (#) que deseja deletar: ");
+        String entrada = scanner.nextLine();
+        if (!Validador.isStringInteiroValido(entrada)) {
+            System.out.println(" Número inválido.");
+            return;
+        }
+        int numComentario = Integer.parseInt(entrada);
+
+        if (numComentario >= 1 && numComentario <= post.getComentarios().size()) {
+            //pega o comentário a ser deletado
+            Comentario comentarioParaDeletar = post.getComentarios().get(numComentario - 1);
+
+            System.out.print("Tem certeza que deseja deletar este comentário? (s/n): ");
+            String confirmacao = scanner.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("s")) {
+                //chama o método da classe Post para remover o comentário de sua própria lista
+                post.removerComentario(comentarioParaDeletar);
+                System.out.println("✅ Comentário deletado com sucesso.");
+            } else {
+                System.out.println("Ação cancelada.");
+            }
+        } else {
+            System.out.println(" Não existe um comentário com esse número.");
         }
     }
 

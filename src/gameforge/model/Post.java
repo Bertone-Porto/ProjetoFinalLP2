@@ -135,6 +135,11 @@ public class Post implements Avaliavel, Comparable<Post>{
         return soma/avaliacoes.size();
     }
 
+    public void removerComentario(Comentario comentario) {
+        if (comentario != null) {
+            this.comentarios.remove(comentario);
+        }
+    }
 
     public int getQuantidadeFavoritos() {
         return this.favoritadoPor.size();
