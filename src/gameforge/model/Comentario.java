@@ -96,7 +96,7 @@ public class Comentario implements Avaliavel, Comparable<Comentario>{
     public boolean equals(Comentario outro){
         if (this==outro){return true;}
         if (outro==null){return false;}
-        return this.texto.equals(outro.texto);
+        return this.texto.equalsIgnoreCase(outro.texto);
     }
 
     @Override
