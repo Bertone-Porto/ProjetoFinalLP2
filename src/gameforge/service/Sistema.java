@@ -10,6 +10,7 @@ import java.util.Set;
 //classe principal que gerencia a execução do programa, menus e dados
 public class Sistema {
     private Usuario usuarioLogado; //atributo para controlar quem está logado
+    private Usuario ADM;
     private List<Usuario> usuarios;
     private Scanner scanner; // O scanner agora é um atributo da classe
     private List<Post> posts;
@@ -29,7 +30,20 @@ public class Sistema {
         Usuario admin = new UsuarioAdmin("Admin", "admin", "admin", perfilAdmin);
         //adiciona o admin à lista de usuários do sistema
         this.usuarios.add(admin);
+        this.ADM = admin;
         //System.out.println(">>> Conta de administrador padrão foi criada. <<<");
+    }
+
+    public Usuario getADM(){
+        return this.ADM;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return this.usuarios;
+    }
+
+    public List<Post> getPosts() {
+        return this.posts;
     }
 
     //o único main do projeto estará aqui
