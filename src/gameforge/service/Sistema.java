@@ -34,6 +34,16 @@ public class Sistema {
         //System.out.println(">>> Conta de administrador padrão foi criada. <<<");
     }
 
+    //encontra e retorna o usuário admin que já foi criado no construtor
+    public Usuario getAdmin() {
+        for (Usuario u : this.usuarios) {
+            if (u instanceof UsuarioAdmin) {
+                return u;
+            }
+        }
+        return null; //caso não encontre
+    }
+
     public Usuario getADM(){
         return this.ADM;
     }
@@ -46,7 +56,6 @@ public class Sistema {
         return this.posts;
     }
 
-    //o único main do projeto estará aqui
     public static void main(String[] args) {
         Sistema gameForge = new Sistema();
         gameForge.executar(); //o main chama o método principal de execução
@@ -54,12 +63,10 @@ public class Sistema {
 
     //método principal que controla o fluxo do aplicativo
     public void executar() {
-
         //Loop do menu principal (Login)
         while (true) {
             exibirMenuPrincipal();
             String entrada = scanner.nextLine(); //lê a entrada como String
-
             // valida antes de converter
             if (Validador.isStringInteiroValido(entrada)) {
                 int opcao = Integer.parseInt(entrada);
@@ -82,7 +89,6 @@ public class Sistema {
             }
         }
     }
-
     private void exibirMenuPrincipal() {
         System.out.println("\n--- BEM-VINDO AO GAMEFORGE ---");
         System.out.println("1. Fazer Login");

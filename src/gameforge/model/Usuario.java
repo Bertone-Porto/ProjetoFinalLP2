@@ -24,35 +24,26 @@ public abstract class Usuario implements Comparable<Usuario>{
         this.postsCriados = new ArrayList<>();
         this.postsFavoritos = new HashSet<>();
     }
-
     public String getNome() {
         return nome;
     }
-
     public String getNickname() {
         return nickname;
     }
-
     public PerfilUsuario getPerfil() {
         return perfil;
     }
-
     public boolean autenticar(String senhaDigitada) {
         //compara a senha armazenada com a senha fornecida
         return this.senha.equals(senhaDigitada);
     }
-
     public abstract void mostrarPermissoes();
-
-    
     public int compareTo(Usuario outro){
         return this.nickname.compareTo(outro.nickname);
     }
-
     public boolean equals(Usuario outro){
         return this.nickname.equalsIgnoreCase(outro.nickname);
     }
-
     @Override
     public String toString() {
         return "Usuário: " + nickname + " (" + nome + ")\n" + perfil.toString();
@@ -64,9 +55,9 @@ public abstract class Usuario implements Comparable<Usuario>{
      */
     public void favoritarPost(Post post) {
         if (post != null) {
-            // Adiciona o post à sua lista de favoritos
+            //adiciona o post à sua lista de favoritos
             this.postsFavoritos.add(post);
-            // Avisa o post que ele foi favoritado por este usuário
+            //avisa o post que ele foi favoritado por este usuário
             post.adicionarFavorito(this);
         }
     }
